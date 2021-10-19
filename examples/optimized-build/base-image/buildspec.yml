@@ -1,0 +1,27 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - docker pull $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG || true
+      # Setup ssh on host (CodeBuild) so that the private key is not stored inside the docker image
+      - mkdir -p ~/.ssh
+      - echo "$GITHUB_SSH" > ~/.ssh/id_rsa
+      - chmod 600 ~/.ssh/id_rsa
+      - eval $(ssh-agent)
+      - ssh-add ~/.ssh/id_rsa
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...
+      # --ssh default fails without specifying default=$SSH_AUTH_SOCK. Not sure why...
+      # - DOCKER_BUILDKIT=1 docker build --ssh default=$SSH_AUTH_SOCK --cache-from $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG -f ./optimized-build/base-image/Dockerfile -t $IMAGE_REPO_NAME:$IMAGE_TAG --build-arg GIT_CLONE_SSH_URL=$GIT_CLONE_SSH_URL --build-arg GIT_BRANCH=$GIT_BRANCH --build-arg SERVER=$SERVER --build-arg APP_DIR=$APP_DIR .
+      - DOCKER_BUILDKIT=1 docker build --ssh default=$SSH_AUTH_SOCK -f ./examples/optimized-build/base-image/Dockerfile -t $IMAGE_REPO_NAME:$IMAGE_TAG --build-arg GIT_CLONE_SSH_URL=$GIT_CLONE_SSH_URL --build-arg GIT_BRANCH=$GIT_BRANCH --build-arg SERVER=$SERVER --build-arg APP_DIR=$APP_DIR .
+      - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker image...
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG

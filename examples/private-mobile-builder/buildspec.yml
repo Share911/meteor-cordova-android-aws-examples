@@ -1,0 +1,18 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr-public get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin public.ecr.aws
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...
+      - DOCKER_BUILDKIT=1 docker build -f ./examples/private-mobile-builder/Dockerfile --build-arg GITHUB_SSH --build-arg GIT_CLONE_SSH_URL=$GIT_CLONE_SSH_URL --build-arg GIT_BRANCH=$GIT_BRANCH --build-arg SERVER=$SERVER --build-arg APP_DIR=$APP_DIR --build-arg BASE_IMAGE=public.ecr.aws/c0q4v0s2/meteor-cordova-android:$IMAGE_TAG -o build_output .
+  post_build:
+    commands:
+      - echo Build completed on `date`
+artifacts:
+  files:
+    - 'build_output/*'
