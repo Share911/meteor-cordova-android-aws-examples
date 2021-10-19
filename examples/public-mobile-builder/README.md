@@ -67,7 +67,6 @@ The permissions are as follow:
     * UploadLayerPart
     * CompleteLayerUpload
     * PutImage
-    * Set specific resource to your ECR Repository
 2. Service: S3
     * ListBucket
     * ListAllMyBuckets
