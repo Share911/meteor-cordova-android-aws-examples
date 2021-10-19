@@ -45,9 +45,9 @@ Create a CodeBuild Project for Mobile Builder with the following configurations:
      2. Setup the following Environment Variables
          * AWS_DEFAULT_REGION = your region-ID
          * IMAGE_TAG = latest
-         * GIT_CLONE_URL = https://github.com/Share911/empty-meteor-public.git or your meteor project repository url for git clone
+         * GIT_CLONE_URL = <your private meteor git repo> (ex: https://github.com/acme/app.git)
          * GIT_BRANCH = main or Git branch to start your build on
-         * SERVER = https://richie-empty-app.meteorapp.com or Your meteor webserver
+         * SERVER = <your meteor webserver url> (ex: https://acme-app.meteorapp.com)
          * APP_DIR = leave it empty for this example. This should be the path to your app, if it is not located in root of your repository
          * GITHUB_SSH = Your git Secret ARN. Type = Secrets Manager
 11. Build specifications: Use a buildspec file
