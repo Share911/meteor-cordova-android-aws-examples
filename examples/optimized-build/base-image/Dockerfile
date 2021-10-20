@@ -48,7 +48,7 @@ ARG DESTINATION_PATH=/home/meteor/$DESTINATION_DIR
 ARG GIT_CLONE_SSH_URL
 ARG GIT_BRANCH
 # Git private key
-ARG GITHUB_SSH
+ARG GITHUB_DEPLOY_KEY
 # Host URL of meteor app webserver
 ARG SERVER
 # Directory of the app within the repo

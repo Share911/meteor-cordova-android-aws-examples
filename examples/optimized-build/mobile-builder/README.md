@@ -51,7 +51,7 @@ Create a CodeBuild Project for Mobile Builder with the following configurations:
          * GIT_BRANCH = main or Git branch to start your build on
          * SERVER = your meteor webserver url (ex: https://acme-app.meteorapp.com)
          * APP_DIR = leave it empty for this example. This should be the path to your app, if it is not located in root of your repository
-         * GITHUB_SSH = Your git Secret ARN. Type = Secrets Manager
+         * GITHUB_DEPLOY_KEY = ARN of your github deploy key stored in Secrets Manager. Type = Secrets Manager
          * AWS_ACCOUNT_ID = Your AWS account id
          * IMAGE_REPO_NAME = ECR repository name of your optimized base image
 11. Build specifications: Use a buildspec file

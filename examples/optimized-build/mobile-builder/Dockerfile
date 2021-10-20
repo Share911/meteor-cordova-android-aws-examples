@@ -8,7 +8,7 @@ ARG DESTINATION_PATH=/home/meteor/$DESTINATION_DIR
 FROM $BASE_IMAGE AS build-stage
 
 # Git private key
-ARG GITHUB_SSH
+ARG GITHUB_DEPLOY_KEY
 # Host URL of meteor app webserver
 ARG SERVER
 # Directory of the app within the repo
@@ -22,7 +22,7 @@ USER meteor
 
 # Setup git ssh
 RUN mkdir /home/meteor/.ssh && chmod 0700 /home/meteor/.ssh && ssh-keyscan -t rsa github.com >> /home/meteor/.ssh/known_hosts
-RUN echo "$GITHUB_SSH" > /home/meteor/.ssh/id_rsa && chmod 400 /home/meteor/.ssh/id_rsa
+RUN echo "$GITHUB_DEPLOY_KEY" > /home/meteor/.ssh/id_rsa && chmod 400 /home/meteor/.ssh/id_rsa
 
 # Prepare for build, should be done as meteor user
 WORKDIR ${APP_PATH}

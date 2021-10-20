@@ -19,13 +19,15 @@ But it is easier to start the project as a root user in order to setup proper re
 Create a [S3 bucket](https://s3.console.aws.amazon.com/s3/home) that will hold your mobile build output  
 Bucket versioning is recommended to preserve old builds, but it is not necessarily needed for this example.
 
-### 2. Upload private key for git
-This private key will be used to fetch your meteor project from a private git repository.
-To do this:
+### 2. Upload deploy key for git
+We assume you are using Github.  First generate a deploy key for your private repo.
+This deploy key will be used to fetch your meteor project from a private git repository.
+
+Next add this deploy key to Secrets Manager:
 1. Open AWS Secrets Manager
 2. Store a new secret
 3. Choose "Other type of secrets"
-4. Use plaintext and paste your private key
+4. Use plaintext and paste your deploy key
 5. Store your key
 6. Note down the Secret ARN as it will be used in the next step
 
@@ -49,7 +51,7 @@ Create a CodeBuild Project for Mobile Builder with the following configurations:
          * GIT_BRANCH = main or Git branch to start your build on
          * SERVER = your meteor webserver url (ex: https://acme-app.meteorapp.com)
          * APP_DIR = leave it empty for this example. This should be the path to your app, if it is not located in root of your repository
-         * GITHUB_SSH = Your git Secret ARN. Type = Secrets Manager
+         * GITHUB_DEPLOY_KEY = ARN of your github deploy key stored in Secrets Manager. Type = Secrets Manager
 11. Build specifications: Use a buildspec file
 12. Buildspec name: examples/private-mobile-builder/buildspec.yml
 13. Artifact Type: Amazon S3

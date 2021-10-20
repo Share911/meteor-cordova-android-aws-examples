@@ -25,9 +25,7 @@ This is where [AWS ECR](https://aws.amazon.com/ecr/) comes in.
 Using ECR, we can store a pre-configured docker image that will be used for our mobile build.
 
 In addition to the 2 services above, we will utilize [AWS Secrets Manager](https://aws.amazon.com/secrets-manager/) to keep our sensitive informations.
-For example, in order to pull from a private git repository, we will use a private key that's stored within Secrets Manager.
-
-With these three services, we can build a Meteor Android app easily and even setup a continous integration.
+For example, in order to pull from a private git repository, we will use a deploy key that's stored within Secrets Manager.
 
 ## Examples
 
@@ -37,7 +35,7 @@ As every project has different need, we have provided 3 examples that might suit
 3. [Build from a private git repository using a customized base image](https://github.com/Share911/meteor-cordova-android-aws-examples/tree/main/examples/optimized-build) (aab)
 
 We recommend you to read #1 or #2 before starting with #3.
-#3 is a very optimized build that will reduce build time significantly. It is recommended for continous integration.
+#3 is a very optimized build that will reduce build time significantly. It is recommended for continuous integration.
 
 *We have provided a public ECR docker image with a pre-configured environment that should be suitable to build your Meteor Android app.
 You can check the public base image used [here](https://github.com/Share911/meteor-cordova-android-public-image)
