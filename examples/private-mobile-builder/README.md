@@ -29,7 +29,7 @@ To do this:
 5. Store your key
 6. Note down the Secret ARN as it will be used in the next step
 
-### 2. Create a Codebuild Project
+### 3. Create a Codebuild Project
 Create a CodeBuild Project for Mobile Builder with the following configurations:
 1. Project Name: `private-mobile-builder`
 2. Source: The source here is how you will provide this git repository to AWS. For this example we will use GitHub.
