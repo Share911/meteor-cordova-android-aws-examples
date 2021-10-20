@@ -67,7 +67,7 @@ Create a CodeBuild Project for Mobile Builder with the following configurations:
          * AWS_ACCOUNT_ID = Your AWS account id
          * IMAGE_REPO_NAME = ECR repository name of your optimized base image
 11. Build specifications: Use a buildspec file
-12. Buildspec name: examples/private-mobile-builder/buildspec.yml
+12. Buildspec name: examples/optimized-build/mobile-builder/buildspec.yml
 13. Artifact Type: Amazon S3
 14. Bucket Name: `Your S3 Bucket Name`
 15. Artifacts packaging: Zip
