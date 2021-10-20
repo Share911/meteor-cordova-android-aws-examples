@@ -24,15 +24,28 @@ Create a new [ECR repository](https://console.aws.amazon.com/ecr/home) with the 
 2. ECR Repository Name: `optimized-base-image`
 3. Note down the repository name as it will be used in step 3
 
-### 2. Upload private key for git
-This private key will be used to fetch your meteor project from a private git repository.
-To do this:
-1. Open AWS Secrets Manager
-2. Store a new secret
-3. Choose "Other type of secrets"
-4. Use plaintext and paste your private key
-5. Store your key
-6. Note down the Secret ARN as it will be used in step 3
+### 2. Grant access to private repo
+
+#### 1. Create new public/private keypair
+
+Source: [Instructions from Github](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#generating-a-new-ssh-key)
+
+`$ ssh-keygen -t ed25519 -C "your_email@example.com"`
+
+For this demo, we won't be adding a passphrase.  If you do want to use one then you can add another Secrets Manager resource for the passphrase and update the scripts to use it.
+
+#### 2. Add public key to Github deploy key
+
+Generate a deploy key for your private repo by going to Settings => Deploy Keys.
+You should paste the _public_ key created in step 1 here.
+
+#### 3. Add private key to Secrets Manager:
+    1. Open AWS Secrets Manager
+    2. Store a new secret
+    3. Choose "Other type of secrets"
+    4. Use plaintext and paste your _private_ key here
+    5. Store your key
+    6. Note down the Secret ARN as it will be used in the next step
 
 ### 3. Create a Codebuild Project
 Create a CodeBuild Project for Mobile Builder with the following configurations:
