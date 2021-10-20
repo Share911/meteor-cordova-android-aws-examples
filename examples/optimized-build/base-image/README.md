@@ -68,7 +68,7 @@ These permissions are needed for CodeBuild to work with other AWS services.
 You can call this optimized-mobile-builder-codebuild policy.
 
 Copy the JSON below to your policy JSON
-```json
+```javascript
 {
     "Version": "2012-10-17",
     "Statement": [
