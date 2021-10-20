@@ -1,4 +1,4 @@
-# Public Mobile Builder
+# Private Mobile Builder
 
 Using AWS CodeBuild and a public ECR image.
 This example will guide you through building an Meteor Android app in CodeBuild.
