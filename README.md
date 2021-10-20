@@ -41,3 +41,7 @@ We recommend you to read #1 or #2 before starting with #3.
 
 *We have provided a public ECR docker image with a pre-configured environment that should be suitable to build your Meteor Android app.
 You can check the public base image used [here](https://github.com/Share911/meteor-cordova-android-public-image)
+
+## AWS User
+We recommend you to use a root account to set up this project.
+If you'd like to use an IAM user, make sure that it has ECR, ECR Public, CodeBuild, CloudWatch, Secrets Manager, and S3 permissions.

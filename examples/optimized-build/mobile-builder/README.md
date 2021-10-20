@@ -65,69 +65,64 @@ Create a CodeBuild Project for Mobile Builder with the following configurations:
 
 #### CodeBuild Policy
 These permissions are needed for CodeBuild to work with other AWS services.  
-You can call this meteor-mobile-codebuild policy.  
-The permissions are as follow:
-1. Service: Elastic Container Registry
-    * GetAuthorizationToken
-    * BatchCheckLayerAvailability
-    * GetDownloadUrlForLayer
-    * GetRepositoryPolicy
-    * DescribeRepositories
-    * ListImages
-    * DescribeImages
-    * BatchGetImage
-    * ListTagsForResource
-    * DescribeImageScanFindings
-    * InitiateLayerUpload
-    * UploadLayerPart
-    * CompleteLayerUpload
-    * PutImage
-    * Set specific resource to your ECR Repository
-2. Service: Secrets Manager
-    * GetSecretValue
-    * Set specific resource to your Github private key
-3. Service: S3
-    * ListBucket
-    * ListAllMyBuckets
-    * CreateBucket
-    * GetObject
-    * PutObject
+If you have created one for the optimized base image, you can reuse that one.
 
+You can call this optimized-mobile-builder-codebuild policy.
+
+Copy the JSON below to your policy JSON
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "ecr:DescribeImageScanFindings",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:ListTagsForResource",
+                "s3:ListBucket",
+                "ecr:UploadLayerPart",
+                "ecr:ListImages",
+                "ecr:PutImage",
+                "secretsmanager:GetSecretValue",
+                "ecr:BatchGetImage",
+                "ecr:CompleteLayerUpload",
+                "ecr:DescribeImages",
+                "ecr:DescribeRepositories",
+                "ecr:InitiateLayerUpload",
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetRepositoryPolicy"
+            ],
+            "Resource": [
+                "secret-arn", // Replace with your Secret arn
+                "ecr-arn", // Replace with your ECR arn, the format is arn:aws:ecr:$region:$account_id:repository/$repository_name
+                "s3-bucket-arn" // Replace with your S3 bucket arn
+            ]
+        },
+        {
+            "Sid": "VisualEditor1",
+            "Effect": "Allow",
+            "Action": [
+                "s3:ListAllMyBuckets",
+                "ecr:GetAuthorizationToken"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "VisualEditor2",
+            "Effect": "Allow",
+            "Action": [
+                "s3:PutObject",
+                "s3:GetObject"
+            ],
+            "Resource": "s3-obj-arn" // Replace with your S3 bucket arn with /* at the end $s3-bucket-arn/*
+        }
+    ]
+}
+```
 Once created, attach the policy into your codebuild role  
 It is usually named as codebuild-$projectname-service-role  
-
-## AWS User
-Using an AWS root account is not recommended for this project.  
-If you insist on using a root account, you can skip this step.  
-
-#### User Policy
-There are several permissions that are needed for an user to run this project.  
-This single policy should allow user to handle every part of this project.  
-You can call this meteor-mobile-builder policy.  
-The permissions are as follow:
-1. Code Build
-    * ListProjects
-    * ListBuilds
-    * ListBuildsForProject
-    * BatchGetProjects
-    * BatchGetBuilds
-    * RetryBuild
-    * StartBuild
-    * StopBuild
-    * UpdateProject
-    * Set specific resource to your base image and mobile builder projects
-2. CloudWatch Logs
-    * GetLogEvents
-    * DescribeLogGroups
-    * Set to all resources
-2. S3
-    * ListBucket
-    * GetObject
-    * GetObjectVersion
-    * Set Specific resource to your output S3
-
-### Setup AWS User
-Create or use an existing AWS user and give them meteor-mobile-builder policy.
 
 ## Start a mobile build
 Once everything has been configured, head over to your codebuild project and click on start build.
