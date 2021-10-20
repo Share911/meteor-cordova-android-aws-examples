@@ -124,4 +124,4 @@ It is usually named as codebuild-$projectname-service-role
 
 ## Start the build
 Once everything has been configured, head over to your codebuild project and click on start build.
-Once the build is finished, you can find the exported result in your S3 directory.
+Once the build is finished, CodeBuild will push your base image to ECR. You can then proceed with the mobile build.
