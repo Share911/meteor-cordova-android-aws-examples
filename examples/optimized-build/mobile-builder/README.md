@@ -13,37 +13,13 @@ If you haven't setup your own custom ECR image, please start with that first.
 [Build your optimized base image](https://github.com/Share911/meteor-cordova-android-aws-examples/tree/main/examples/optimized-build/base-image)
 
 ## Setup AWS Services
+
 Using an AWS root account is not recommended (by AWS) for this project.  
 But it is easier to start the project as a root user in order to setup proper restrictions for the custom user later on.  
 
-### 1. Create a S3 Bucket for build output
-Create a [S3 bucket](https://s3.console.aws.amazon.com/s3/home) that will hold your mobile build output  
-Bucket versioning is recommended to preserve old builds, but it is not necessarily needed for this example.
+As part of setting up the "base-image", you should already have an S3 bucket for output, secrets in Secrets Manager, and an IAM Policy.
 
-### 2. Grant access to private repo
-
-#### 1. Create new public/private keypair
-
-Source: [Instructions from Github](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#generating-a-new-ssh-key)
-
-`$ ssh-keygen -t ed25519 -C "your_email@example.com"`
-
-For this demo, we won't be adding a passphrase.  If you do want to use one then you can add another Secrets Manager resource for the passphrase and update the scripts to use it.
-
-#### 2. Add public key to Github deploy key
-
-Generate a deploy key for your private repo by going to Settings => Deploy Keys.
-You should paste the _public_ key created in step 1 here.
-
-#### 3. Add private key to Secrets Manager:
-    1. Open AWS Secrets Manager
-    2. Store a new secret
-    3. Choose "Other type of secrets"
-    4. Use plaintext and paste your _private_ key here
-    5. Store your key
-    6. Note down the Secret ARN as it will be used in the next step
-
-### 3. Create a Codebuild Project
+### 1. Create a Codebuild Project
 Create a CodeBuild Project for Mobile Builder with the following configurations:
 1. Project Name: `private-mobile-builder`
 2. Source: The source here is how you will provide this git repository to AWS. For this example we will use GitHub.
@@ -73,68 +49,11 @@ Create a CodeBuild Project for Mobile Builder with the following configurations:
 15. Artifacts packaging: Zip
 16. It is recommended to enable CloudWatch so you can see the logs for debugging.
 
-### 4. Create Policies
+### 2. Attach Policy to Role
 
-#### CodeBuild Policy
-These permissions are needed for CodeBuild to work with other AWS services.  
-If you have created one for the optimized base image, you can reuse that one.
-
-You can call this optimized-mobile-builder-codebuild policy.
-
-Copy the JSON below to your policy JSON
-```javascript
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "VisualEditor0",
-            "Effect": "Allow",
-            "Action": [
-                "ecr:DescribeImageScanFindings",
-                "ecr:GetDownloadUrlForLayer",
-                "ecr:ListTagsForResource",
-                "s3:ListBucket",
-                "ecr:UploadLayerPart",
-                "ecr:ListImages",
-                "ecr:PutImage",
-                "secretsmanager:GetSecretValue",
-                "ecr:BatchGetImage",
-                "ecr:CompleteLayerUpload",
-                "ecr:DescribeImages",
-                "ecr:DescribeRepositories",
-                "ecr:InitiateLayerUpload",
-                "ecr:BatchCheckLayerAvailability",
-                "ecr:GetRepositoryPolicy"
-            ],
-            "Resource": [
-                "secret-arn", // Replace with your Secret arn
-                "ecr-arn", // Replace with your ECR arn, the format is arn:aws:ecr:$region:$account_id:repository/$repository_name
-                "s3-bucket-arn" // Replace with your S3 bucket arn
-            ]
-        },
-        {
-            "Sid": "VisualEditor1",
-            "Effect": "Allow",
-            "Action": [
-                "s3:ListAllMyBuckets",
-                "ecr:GetAuthorizationToken"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Sid": "VisualEditor2",
-            "Effect": "Allow",
-            "Action": [
-                "s3:PutObject",
-                "s3:GetObject"
-            ],
-            "Resource": "s3-obj-arn" // Replace with your S3 bucket arn with /* at the end $s3-bucket-arn/*
-        }
-    ]
-}
-```
-Once created, attach the policy into your codebuild role  
-It is usually named as codebuild-$projectname-service-role  
+Attach the policy you created as part of the "base-image" steps to your new CodeBuild role.
+  
+It is usually named something like: codebuild-$projectname-service-role  
 
 ## Start a mobile build
 Once everything has been configured, head over to your codebuild project and click on start build.
