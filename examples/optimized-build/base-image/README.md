@@ -74,9 +74,18 @@ Create a CodeBuild Project for Mobile Builder with the following configurations:
 12. Buildspec name: examples/optimized-build/base-image/buildspec.yml
 13. It is recommended to enable CloudWatch so you can see the logs for debugging.
 
-### 4. Create Policies
+### 4. Create S3 bucket for output
 
-#### CodeBuild Policy
+Open S3, Create Bucket
+
+Name: myapp-cordova-android-app
+
+### 5. Create Policies
+
+#### CodeBuild Policy in IAM
+
+IAM => Policies => Create Policy
+
 These permissions are needed for CodeBuild to work with other AWS services.  
 You can call this optimized-mobile-builder-codebuild policy.
 
@@ -106,7 +115,8 @@ Copy the JSON below to your policy JSON
                 "ecr:GetRepositoryPolicy"
             ],
             "Resource": [
-                "secret-arn", // Replace with your Secret arn
+                "deploy-key-secrets-arn", // Replace with the ARN for the deploy key secret in Secrets Manager
+                "google-services-secrets-arn", // Replace with the ARN for the google services secret in Secrets Manager
                 "ecr-arn", // Replace with your ECR arn, the format is arn:aws:ecr:$region:$account_id:repository/$repository_name
                 "s3-bucket-arn" // Replace with your S3 bucket arn
             ]
@@ -127,11 +137,14 @@ Copy the JSON below to your policy JSON
                 "s3:PutObject",
                 "s3:GetObject"
             ],
-            "Resource": "s3-obj-arn" // Replace with your S3 bucket arn with /* at the end $s3-bucket-arn/*
+            "Resource": "s3-obj-arn" // Replace with your S3 bucket arn with "/*" at the end.  Ex: arn:aws:s3:::s3-bucket-arn/*
         }
     ]
 }
 ```
+
+Replace the "Resource" entries with the actual ARN's.
+
 Once created, attach the policy into your codebuild role  
 It is usually named as codebuild-$projectname-service-role  
 
