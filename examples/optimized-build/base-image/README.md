@@ -76,11 +76,12 @@ Create a CodeBuild Project for Mobile Builder with the following configurations:
 
 ### 4. Create S3 bucket for output
 
-Open S3, Create Bucket
+Create a [S3 bucket](https://s3.console.aws.amazon.com/s3/home) that will hold your mobile build output  
+Bucket versioning is recommended to preserve old builds, but it is not necessarily needed for this example.
 
-Name: myapp-cordova-android-app
+Example Name: myapp-cordova-android-app
 
-### 5. Create Policies
+### 5. Create IAM Policy
 
 #### CodeBuild Policy in IAM
 
@@ -145,8 +146,9 @@ Copy the JSON below to your policy JSON
 
 Replace the "Resource" entries with the actual ARN's.
 
-Once created, attach the policy into your codebuild role  
-It is usually named as codebuild-$projectname-service-role  
+### 6. Attach Policy to Role
+
+Once created, attach the policy into your codebuild role.  It is usually named something like: codebuild-$projectname-service-role  
 
 ## Start the build
 Once everything has been configured, head over to your codebuild project and click on start build.
