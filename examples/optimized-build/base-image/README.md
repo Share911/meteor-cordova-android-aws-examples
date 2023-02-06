@@ -34,9 +34,9 @@ Source: [Instructions from Github](https://docs.github.com/en/authentication/con
 
 For this demo, we won't be adding a passphrase.  If you do want to use one then you can add another Secrets Manager resource for the passphrase and update the scripts to use it.
 
-#### 2. Add public key to Github deploy key
+#### 2. Add public key as deploy key to Meteor app Github repo
 
-Generate a deploy key for your private repo by going to Settings => Deploy Keys.
+Generate a deploy key for your Meteor app's private repo by going to Settings => Deploy Keys.
 You should paste the _public_ key created in step 1 here.
 
 #### 3. Add private key to Secrets Manager:
